@@ -7,8 +7,17 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx mocha test/nfpiet/nfpiet.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@1001-digital/erc721-extensions": "^0.0.13",
+    "@openzeppelin/contracts": "^4.3.3",
+    "truffle-assertions": "^0.9.2",
+    "web3": "^1.6.1"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.3"
+  }
 }
