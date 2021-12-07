@@ -1,0 +1,10 @@
+// Les couleurs sont representées dans une enumeration allant de 0 a 19 :)
+{
+  "name": "hello_world",
+  "author": "JeanCupidon",
+  "codels": [
+    [1, 5, 19],
+    [6, 4 ,12],
+    [3, 1, 65]
+  ]
+}
