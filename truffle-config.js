@@ -23,6 +23,8 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+let Web3 = require('web3')
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -45,7 +47,9 @@ module.exports = {
      host: "127.0.0.1",     // Localhost (default: none)
      port: 8545,            // Standard Ethereum port (default: none)
      network_id: "*",       // Any network (default: none)
-     websocket: true        // Enable EventEmitter interface for web3 (default: false)
+     websocket: true,        // Enable EventEmitter interface for web3 (default: false)
+     provider: () =>  new Web3.providers.WebsocketProvider('ws://127.0.0.1:8545')
+    //  provider: () => new Web3.providers.WebsocketProvider('wss://127.0.0.1:8545')
     },
     // Another network with more advanced options...
     // advanced: {

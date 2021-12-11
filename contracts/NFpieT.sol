@@ -25,14 +25,14 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
 
     mapping (uint256 => string) private _tokenNames;
     mapping (uint256 => string) private _tokenAuthors;
-    mapping (uint256 => uint8[][]) private _tokenCodels;
+    mapping (uint256 => bytes1[][]) private _tokenCodels;
 
-    event TokenMinted(address emitter);
+    event TokenMinted(address emitter, string name, string author, string codels);
 
     constructor() ERC721("NFpieT", "NFP") Ownable() {
     }
 
-    function _setTokenData(uint256 tokenId, string memory name, string memory author, string memory codels)
+    function _setTokenCredits(uint256 tokenId, string memory name, string memory author)
         internal
         virtual
     {
@@ -45,35 +45,32 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         // _tokenCodels[tokenId] = codels;
     }
 
-    function _checkPietRegularity(string memory codels)
-        pure
+    // will return true if parsing was successful, false otherwise(which stops the transactions, we ain't minting no invalid Piet code.)
+    function _parsePiet(string memory codels, uint256 tokenId)
         internal
         returns(bool) 
     {
-        uint8 inception = 0;
-        uint8 prevNcols = 0;
-        uint8 nCols = 0;
-        bool firstIt = true;
+        uint8 x = 0;
+        uint8 y = 0;
         bytes memory buffer = bytes(codels);
 
         uint16 c = 0;
         while (c < buffer.length) {
-            if (buffer[c] == '[') {
-                inception += 1;
-            } else if (buffer[c] == ']') {
-                inception -= 1;
-                if (!firstIt && nCols != prevNcols) {
+            if (buffer[c] == ']') {
+                x = 0;
+                y += 1;
+
+                if (y >= 1 && _tokenCodels[tokenId][y].length != _tokenCodels[tokenId][y - 1].length) {
                     return false;
                 }
-                prevNcols = nCols;
-                nCols = 0;
-            } else if (buffer[c] != ',') {
-                nCols++;
-            } 
+            }  else if (buffer[c] != ',' && buffer[c] != '[') {
+                _tokenCodels[tokenId][y][x] = buffer[c];
+                x += 1;
+            }
 
             ++c;
         }
-
+        
         return true;
     }
 
@@ -81,15 +78,18 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         public
         returns (uint256)
     {
-        require (_checkPietRegularity(codels), "Piet code must be in a rectangular shape at least.");
+
 
 
         _tokenIds.increment();
 
         uint256 id = _tokenIds.current();
         _safeMint(owner, id);
-        _setTokenData(id, name, author, codels);
-        emit TokenMinted(msg.sender);
+        _setTokenCredits(id, name, author);
+        // parses the piet and checks regularity at the same time
+        require (_parsePiet(codels, id), "Piet code must be in a rectangular shape at least."); // requirement must be upper in the code 
+
+        emit TokenMinted(msg.sender, name, author, codels);
 
         return id;
     }
