@@ -26,9 +26,7 @@ contract("NFpieT", (accounts) => {
     const instance = await NFpieT.deployed()
 console.log(instance.constructor._json.deployedBytecode.length);
 
-    // console.log(instance)
-    const response = await instance.mint(emitter, metadata.name, metadata.author, JSON.stringify(metadata.codels))
-    // console.log(response)
+    const response = await instance.mint(emitter, metadata.name, metadata.author, JSON.stringify(metadata.codels), {gas: 220000})
 
     console.log(response)
     truffleAssert.eventEmitted(response, 'TokenMinted', {
