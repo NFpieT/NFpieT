@@ -27,8 +27,8 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
 
     mapping (uint256 => string) private _tokenNames;
     mapping (uint256 => string) private _tokenAuthors;
-    //mapping (uint256 => bytes1[][]) private _tokenCodels;
-    mapping (uint256 => mapping(uint8 => mapping(uint8 => uint8))) private _tokenCodels;
+    mapping (uint256 => bytes1[][]) private _tokenCodels;
+    //mapping (uint256 => mapping(uint8 => mapping(uint8 => uint8))) private _tokenCodels;
 
     event TokenMinted(address emitter, string name, string author, string codels);
 
@@ -69,17 +69,11 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
                 y += 1;
 
                 console.log("c %s", c);
-                
-                console.log("x %s, y %s", x, y);
 
                 if (y >= 1 && _tokenCodels[tokenId][y].length != _tokenCodels[tokenId][y - 1].length) {
                     return false;
                 }
             }  else if (buffer[c] != ',' && buffer[c] != '[') {
-                
-                console.log("c %s", c);
-                
-                console.log("x %s, y %s", x, y);
 
                 _tokenCodels[tokenId][y][x] = buffer[c];
                 x += 1;

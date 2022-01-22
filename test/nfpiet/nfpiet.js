@@ -20,7 +20,11 @@ describe("NFpieT", function() {
     {
       "name": "hello_world",
       "author": "JeanCupidon",
-      "codels": "[[1, 5, 19],[6, 4, 12],[3, 1, 6]]"
+      "codels": [
+        [1, 5, 19],
+        [6, 4, 12],
+        [3, 1, 6]
+      ]
     }
 
     let balance = await nfpiet.balanceOf(recipient);
@@ -30,7 +34,7 @@ describe("NFpieT", function() {
       recipient, 
       metadata.name, 
       metadata.author, 
-      metadata.codels, 
+      JSON.stringify(metadata.codels), 
       { value: ethers.utils.parseEther('0.05') }
       );
 
