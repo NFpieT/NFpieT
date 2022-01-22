@@ -1,73 +1,39 @@
-const truffleAssert = require('truffle-assertions');
+// const truffleAssert = require('truffle-assertions');
+const { expect } = require('chai');
+const { ethers } = require('hardhat');
 
-const NFpieT = artifacts.require('NFpieT');
+// const NFpieT = artifacts.require('NFpieT');
 
-const waitForEvent = (result, eventType) => new Promise((resolve) => {
-  truffleAssert.eventEmitted(result, eventType, resolve);
-});
+// const waitForEvent = (result, eventType) => new Promise((resolve) => {
+//   truffleAssert.eventEmitted(result, eventType, resolve);
+// });
 
+describe("NFpieT", function() {
+  it("mint and transfer it to someone", async function () {
+    const NFpieT = await ethers.getContractFactory("NFpieT");
+    const nfpiet = await NFpieT.deploy();
+    await nfpiet.deployed();
 
-contract("NFpieT", (accounts) => {
-  it("should create a new token if metadata are valid", async () => {
+    const recipient = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
+
     const metadata =
     {
       "name": "hello_world",
       "author": "JeanCupidon",
-      "codels": [
-        [1, 5, 19],
-        [6, 4, 12],
-        [3, 1, 6]
-      ]
+      "codels": "[[1, 5, 19],[6, 4, 12],[3, 1, 6]]"
     }
 
+    let balance = await nfpiet.balanceOf(recipient);
+    expect(balance).to.equal(0);
 
-    const emitter = accounts[0]
+    const newlyMintedToken = await nfpiet.payToMint(
+      recipient, 
+      metadata.name, 
+      metadata.author, 
+      metadata.codels, 
+      { value: ethers.utils.parseEther('0.05') }
+      );
 
-    const instance = await NFpieT.deployed()
-console.log(instance.constructor._json.deployedBytecode.length);
-
-    const response = await instance.mint(emitter, metadata.name, metadata.author, JSON.stringify(metadata.codels), {gas: 220000})
-
-    console.log(response)
-    truffleAssert.eventEmitted(response, 'TokenMinted', {
-      emitter,
-      name: metadata.name,
-      author: metadata.author,
-      codels: metadata.codels
-    })
+    console.log(newlyMintedToken);
   });
-
-
-  // it("should create a new token", async () => {
-  //   const instance = await NFpieT.deployed();
-
-  //   const baseSupply = await instance.totalSupply();
-
-  //   const newTokenurl = "blblbl"
-  //   await waitForEvent(
-  //     await instance.mint("0x0Cc300DAF207894212e42181952A84Af0435E629", `bitmap_url=${newTokenurl}`),
-  //     'Transfer',
-  //   );
-
-  //   const currentSupply = await instance.totalSupply();
-  //   expect(baseSupply.toNumber() + 1).to.equal(currentSupply.toNumber());
-  //   const created = await instance.getTokenURI(currentSupply)
-  //   console.log(created)
-  //   expect(created.bitmap_url.to.equal(newTokenurl))
-  // });
-
-
-  // it("should get total supply", async () => {
-  //   const instance = await NFpieT.deployed();
-  //   const supply = await instance.totalSupply();
-
-  // });
-
-  // it("should be burnable", async () => {
-  //   const id = 1
-  //   const instance = await NFpieT.deployed();
-  //   const supply = await instance.totalSupply();
-  //   expect()
-
-  // })
 });

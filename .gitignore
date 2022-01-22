@@ -137,3 +137,36 @@ dist
 build/
 
 # End of https://www.toptal.com/developers/gitignore/api/vscode,,node,,truffle
+artifacts/@openzeppelin/contracts/access/Ownable.sol/Ownable.dbg.json
+artifacts/@openzeppelin/contracts/access/Ownable.sol/Ownable.json
+artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.dbg.json
+artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.json
+artifacts/@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol/ERC721Burnable.dbg.json
+artifacts/@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol/ERC721Burnable.json
+artifacts/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol/IERC721Metadata.dbg.json
+artifacts/@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol/IERC721Metadata.json
+artifacts/@openzeppelin/contracts/token/ERC721/IERC721.sol/IERC721.dbg.json
+artifacts/@openzeppelin/contracts/token/ERC721/IERC721.sol/IERC721.json
+artifacts/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol/IERC721Receiver.dbg.json
+artifacts/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol/IERC721Receiver.json
+artifacts/@openzeppelin/contracts/utils/Address.sol/Address.dbg.json
+artifacts/@openzeppelin/contracts/utils/Address.sol/Address.json
+artifacts/@openzeppelin/contracts/utils/Context.sol/Context.dbg.json
+artifacts/@openzeppelin/contracts/utils/Context.sol/Context.json
+artifacts/@openzeppelin/contracts/utils/Counters.sol/Counters.dbg.json
+artifacts/@openzeppelin/contracts/utils/Counters.sol/Counters.json
+artifacts/@openzeppelin/contracts/utils/introspection/ERC165.sol/ERC165.dbg.json
+artifacts/@openzeppelin/contracts/utils/introspection/ERC165.sol/ERC165.json
+artifacts/@openzeppelin/contracts/utils/introspection/IERC165.sol/IERC165.dbg.json
+artifacts/@openzeppelin/contracts/utils/introspection/IERC165.sol/IERC165.json
+artifacts/@openzeppelin/contracts/utils/Strings.sol/Strings.dbg.json
+artifacts/@openzeppelin/contracts/utils/Strings.sol/Strings.json
+artifacts/build-info/849419fcb4b7a0090907d38b517f529b.json
+artifacts/build-info/f5a3c0082aa519278c5b767bca734193.json
+artifacts/contracts/Migrations.sol/Migrations.dbg.json
+artifacts/contracts/Migrations.sol/Migrations.json
+artifacts/contracts/NFpieT.sol/NFpieT.dbg.json
+artifacts/contracts/NFpieT.sol/NFpieT.json
+artifacts/hardhat/console.sol/console.dbg.json
+artifacts/hardhat/console.sol/console.json
+cache/solidity-files-cache.json

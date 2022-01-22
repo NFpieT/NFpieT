@@ -18,6 +18,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "hardhat/console.sol";
+
 
 contract NFpieT is ERC721, ERC721Burnable, Ownable {
     using Counters for Counters.Counter;
@@ -25,7 +27,8 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
 
     mapping (uint256 => string) private _tokenNames;
     mapping (uint256 => string) private _tokenAuthors;
-    mapping (uint256 => bytes1[][]) private _tokenCodels;
+    //mapping (uint256 => bytes1[][]) private _tokenCodels;
+    mapping (uint256 => mapping(uint8 => mapping(uint8 => uint8))) private _tokenCodels;
 
     event TokenMinted(address emitter, string name, string author, string codels);
 
@@ -50,9 +53,14 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         internal
         returns(bool) 
     {
+
+        console.log("codels ", codels);
+
         uint8 x = 0;
         uint8 y = 0;
         bytes memory buffer = bytes(codels);
+
+        console.log("x %s, y %s", x, y);
 
         uint16 c = 0;
         while (c < buffer.length) {
@@ -60,10 +68,19 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
                 x = 0;
                 y += 1;
 
+                console.log("c %s", c);
+                
+                console.log("x %s, y %s", x, y);
+
                 if (y >= 1 && _tokenCodels[tokenId][y].length != _tokenCodels[tokenId][y - 1].length) {
                     return false;
                 }
             }  else if (buffer[c] != ',' && buffer[c] != '[') {
+                
+                console.log("c %s", c);
+                
+                console.log("x %s, y %s", x, y);
+
                 _tokenCodels[tokenId][y][x] = buffer[c];
                 x += 1;
             }
@@ -78,9 +95,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         public
         returns (uint256)
     {
-
-
-
         _tokenIds.increment();
 
         uint256 id = _tokenIds.current();
@@ -100,5 +114,26 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
 
     function totalSupply() public view returns (uint256) {
         return _tokenIds.current();
+    }
+
+    function payToMint(
+        address recipient,
+        string memory name, 
+        string memory author, 
+        string memory codels
+    ) public payable returns (uint256) {
+        require (msg.value >= 0.05 ether, 'Need to pay up!');
+
+        uint256 newItemId = _tokenIds.current();
+        _tokenIds.increment();
+
+        _mint(recipient, newItemId);
+        _setTokenCredits(newItemId, name, author);
+
+        require (_parsePiet(codels, newItemId), "Piet code must be in a rectangular shape at least.");
+
+        emit TokenMinted(msg.sender, name, author, codels);
+
+        return newItemId;
     }
 }
