@@ -19,7 +19,6 @@ describe("NFpieT", function() {
     const metadata =
     {
       "name": "hello_world",
-      "author": "JeanCupidon",
       "codels": [
         [1, 5, 19],
         [6, 4, 12],
@@ -33,7 +32,6 @@ describe("NFpieT", function() {
     const newlyMintedToken = await nfpiet.payToMint(
       recipient, 
       metadata.name, 
-      metadata.author, 
       JSON.stringify(metadata.codels), 
       { value: ethers.utils.parseEther('0.05') }
       );

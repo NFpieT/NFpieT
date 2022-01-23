@@ -25,9 +25,8 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     Counters.Counter private _tokenIds;
 
     mapping(uint256 => string) private _tokenNames;
-    mapping(uint256 => string) private _tokenAuthors;
-    mapping(uint256 => bytes1[][]) private _tokenCodels;
-    //mapping (uint256 => mapping(uint8 => mapping(uint8 => uint8))) private _tokenCodels;
+    mapping(uint256 => address) private _tokenAuthors;
+    mapping(uint256 => string) private _tokenCodelJsons;
 
     string[] private _codelsColors = [
         "#FFFFFF",
@@ -55,7 +54,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     event TokenMinted(
         address emitter,
         string name,
-        string author,
+        address author,
         string codels
     );
 
@@ -64,7 +63,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     function _setTokenCredits(
         uint256 tokenId,
         string memory name,
-        string memory author
+        address author
     ) internal virtual {
         require(
             _exists(tokenId),
@@ -228,21 +227,20 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     function mint(
         address owner,
         string memory name,
-        string memory author,
         string memory codels
     ) public returns (uint256) {
         _tokenIds.increment();
 
         uint256 id = _tokenIds.current();
         _safeMint(owner, id);
-        _setTokenCredits(id, name, author);
+        _setTokenCredits(id, name, owner);
         // parses the piet and checks regularity at the same time
         require(
             bytes(_parsePiet(codels, id)).length > 0,
             "Piet code must be in a rectangular shape at least."
         ); // requirement must be upper in the code
 
-        emit TokenMinted(msg.sender, name, author, codels);
+        emit TokenMinted(msg.sender, name, owner, codels);
 
         return id;
     }
@@ -263,7 +261,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     function payToMint(
         address recipient,
         string memory name,
-        string memory author,
         string memory codels
     ) public payable returns (uint256) {
         require(msg.value >= 0.05 ether, "Need to pay up!");
@@ -272,14 +269,14 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         _tokenIds.increment();
 
         _mint(recipient, newItemId);
-        _setTokenCredits(newItemId, name, author);
+        _setTokenCredits(newItemId, name, recipient);
 
         require(
             bytes(_parsePiet(codels, newItemId)).length > 0,
             "Piet code must be in a rectangular shape at least."
         ); // requirement must be upper in the code
 
-        emit TokenMinted(msg.sender, name, author, codels);
+        emit TokenMinted(msg.sender, name, recipient, codels);
 
         return newItemId;
     }
