@@ -19,6 +19,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
+import "./Base64.sol";
 
 contract NFpieT is ERC721, ERC721Burnable, Ownable {
     using Counters for Counters.Counter;
@@ -63,7 +64,8 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     function _setTokenCredits(
         uint256 tokenId,
         string memory name,
-        address author
+        address author,
+        string memory codels
     ) internal virtual {
         require(
             _exists(tokenId),
@@ -71,7 +73,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         );
         _tokenNames[tokenId] = name;
         _tokenAuthors[tokenId] = author;
-        // _tokenCodels[tokenId] = codels;
+        _tokenCodelJsons[tokenId] = codels;
     }
 
     function append(
@@ -100,7 +102,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         string memory x,
         string memory y,
         uint8 color
-    ) internal returns (string memory) {
+    ) internal view returns (string memory) {
         string[11] memory parts;
 
         parts[0] = '<rect x="';
@@ -131,7 +133,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         string memory svgCodels,
         string memory width,
         string memory height
-    ) internal returns (string memory) {
+    ) internal pure returns (string memory) {
         string[7] memory parts;
         parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ';
         parts[1] = width;
@@ -158,13 +160,13 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     }
 
     // will return true if parsing was successful, false otherwise(which stops the transactions, we ain't minting no invalid Piet code.)
-    function _parsePiet(string memory codels, uint256 tokenId)
+    function _parsePiet(string memory codels)
         internal
+        view
         returns (string memory)
     {
         string memory rectangles = "";
 
-        console.log("codels ", codels);
 
         uint8 x = 0;
         uint8 y = 0;
@@ -220,37 +222,63 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         yBytes[0] = bytes1(y + 47);
         xBytes[0] = bytes1(prev_width + 48);
 
-        console.log(_buildSvgContent(rectangles, string(xBytes), string(yBytes)));
         return _buildSvgContent(rectangles, string(xBytes), string(yBytes));
     }
 
-    function mint(
-        address owner,
-        string memory name,
-        string memory codels
-    ) public returns (uint256) {
-        _tokenIds.increment();
+    // function mint(
+    //     address owner,
+    //     string memory name,
+    //     string memory codels
+    // ) public returns (uint256) {
+    //     _tokenIds.increment();
 
-        uint256 id = _tokenIds.current();
-        _safeMint(owner, id);
-        _setTokenCredits(id, name, owner);
-        // parses the piet and checks regularity at the same time
-        require(
-            bytes(_parsePiet(codels, id)).length > 0,
-            "Piet code must be in a rectangular shape at least."
-        ); // requirement must be upper in the code
+    //     uint256 id = _tokenIds.current();
+    //     _safeMint(owner, id);
+    //     _setTokenCredits(id, name, owner);
+    //     // parses the piet and checks regularity at the same time
+    //     require(
+    //         bytes(_parsePiet(codels, id)).length > 0,
+    //         "Piet code must be in a rectangular shape at least."
+    //     ); // requirement must be upper in the code
 
-        emit TokenMinted(msg.sender, name, owner, codels);
+    //     emit TokenMinted(msg.sender, name, owner, codels);
 
-        return id;
-    }
+    //     return id;
+    // }
 
-    function getTokenURI(uint256 tokenId)
-        external
+    function tokenURI(uint256 tokenId)
+        override
+        public
         view
         returns (string memory)
     {
-        return _tokenNames[tokenId];
+        string[7] memory parts;
+
+        parts[0] = '{ name: "';
+        parts[1] = _tokenNames[tokenId];
+        parts[2] = '", Descripiton: " NFpieT is a community generated token that represents a code in the esoteric language Piet.';
+        parts[4] = '", image: "data:image/svg+xml;base64,';
+        parts[5] = Base64.encode(bytes(_parsePiet(_tokenCodelJsons[tokenId])));
+        parts[6] = '=="}';
+
+        string memory json = string(
+            abi.encodePacked(
+                parts[0],
+                parts[1],
+                parts[2],
+                parts[3],
+                parts[4],
+                parts[5],
+                parts[6],
+                "",
+                ""
+            )
+        );
+
+        
+
+
+        return string(abi.encodePacked('data:application/json;base64,', Base64.encode(bytes(json))));
     }
 
     function totalSupply() public view returns (uint256) {
@@ -269,10 +297,10 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         _tokenIds.increment();
 
         _mint(recipient, newItemId);
-        _setTokenCredits(newItemId, name, recipient);
+        _setTokenCredits(newItemId, name, recipient, codels);
 
         require(
-            bytes(_parsePiet(codels, newItemId)).length > 0,
+            bytes(_parsePiet(codels)).length > 0,
             "Piet code must be in a rectangular shape at least."
         ); // requirement must be upper in the code
 
