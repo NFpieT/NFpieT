@@ -38,6 +38,5 @@ describe("NFpieT", function() {
       { value: ethers.utils.parseEther('0.05') }
       );
 
-    console.log(newlyMintedToken);
   });
 });
