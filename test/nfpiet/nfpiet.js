@@ -168,6 +168,28 @@ describe("Token contract", function () {
 
       expect(await nfpiet.totalSupply()).to.equal(0);
     });
+
+    it("Should not deploy a token with a piet code that's been used already", async function () {
+      expect(await nfpiet.totalSupply()).to.equal(0);
+
+      await nfpiet.payToMint(
+        recipient,
+        metadata.name,
+        JSON.stringify(metadata.codels),
+        { value: ethers.utils.parseEther('0.05') }
+      );
+
+      expect(await nfpiet.totalSupply()).to.equal(1);
+      
+      await expect(nfpiet.payToMint(
+        recipient,
+        metadata.name,
+        JSON.stringify(metadata.codels),
+        { value: ethers.utils.parseEther('0.05') }
+      )).to.be.revertedWith("Piet code already minted!")
+
+      expect(await nfpiet.totalSupply()).to.equal(1);
+    });
   });
 
   describe("TokenURI", function () {

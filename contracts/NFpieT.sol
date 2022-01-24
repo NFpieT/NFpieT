@@ -28,6 +28,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     mapping(uint256 => string) private _tokenNames;
     mapping(uint256 => address) private _tokenAuthors;
     mapping(uint256 => string) private _tokenCodelJsons;
+    mapping(string => uint8) existingPIETs;
 
     string[] private _codelsColors = [
         "#FFFFFF",
@@ -266,6 +267,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         string memory name,
         string memory codels
     ) public payable returns (uint256) {
+        require(existingPIETs[codels] != 1, 'Piet code already minted!');
         require(bytes(name).length <= 32, "Name must be at most 32 bytes long.");
         require(bytes(name).length > 0, "Name must be at least 1 byte long.");
         require(bytes(codels).length > 0, "Codels must be given.");
@@ -277,6 +279,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
 
         uint256 newItemId = _tokenIds.current();
         _tokenIds.increment();
+        existingPIETs[codels] = 1;
 
         _safeMint(recipient, newItemId);
         _setTokenCredits(newItemId, name, recipient, codels);
