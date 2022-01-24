@@ -288,18 +288,22 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         string memory name,
         string memory codels
     ) public payable returns (uint256) {
+        require(bytes(name).length <= 32, "Name must be at most 32 bytes long.");
+        require(bytes(name).length > 0, "Name must be at least 1 byte long.");
+        require(bytes(codels).length > 0, "Codels must be given.");
         require(msg.value >= 0.05 ether, "Need to pay up!");
-
-        uint256 newItemId = _tokenIds.current();
-        _tokenIds.increment();
-
-        _mint(recipient, newItemId);
-        _setTokenCredits(newItemId, name, recipient, codels);
-
         require(
             bytes(_parsePiet(codels)).length > 0,
             "Piet code must be in a rectangular shape at least."
         ); // requirement must be upper in the code
+
+        uint256 newItemId = _tokenIds.current();
+        _tokenIds.increment();
+
+        _safeMint(recipient, newItemId);
+        _setTokenCredits(newItemId, name, recipient, codels);
+
+        
 
         return newItemId;
     }
