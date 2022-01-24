@@ -28,6 +28,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     mapping(uint256 => string) private _tokenNames;
     mapping(uint256 => address) private _tokenAuthors;
     mapping(uint256 => string) private _tokenCodelJsons;
+    mapping(string => uint8) existingPIETs;
 
     string[] private _codelsColors = [
         "#FFFFFF",
@@ -285,16 +286,22 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         return _tokenIds.current();
     }
 
+    function isContentOwned(string memory codels) public view returns (bool) {
+        return existingPIETs[codels] == 1;
+    }
+
     // TODO : set author as the adress of the minter, so that people can only mint once ?
     function payToMint(
         address recipient,
         string memory name,
         string memory codels
     ) public payable returns (uint256) {
+        require(existingPIETs[codels] != 1, 'NFT already minted!');
         require(msg.value >= 0.05 ether, "Need to pay up!");
 
         uint256 newItemId = _tokenIds.current();
         _tokenIds.increment();
+        existingPIETs[codels] = 1;
 
         _mint(recipient, newItemId);
         _setTokenCredits(newItemId, name, recipient, codels);
