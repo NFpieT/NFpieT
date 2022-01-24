@@ -275,9 +275,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
             )
         );
 
-        
-
-
         return string(abi.encodePacked('data:application/json;base64,', Base64.encode(bytes(json))));
     }
 
@@ -303,8 +300,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
             bytes(_parsePiet(codels)).length > 0,
             "Piet code must be in a rectangular shape at least."
         ); // requirement must be upper in the code
-
-        emit TokenMinted(msg.sender, name, recipient, codels);
 
         return newItemId;
     }
