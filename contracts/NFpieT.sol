@@ -226,27 +226,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         return _buildSvgContent(rectangles, string(xBytes), string(yBytes));
     }
 
-    // function mint(
-    //     address owner,
-    //     string memory name,
-    //     string memory codels
-    // ) public returns (uint256) {
-    //     _tokenIds.increment();
-
-    //     uint256 id = _tokenIds.current();
-    //     _safeMint(owner, id);
-    //     _setTokenCredits(id, name, owner);
-    //     // parses the piet and checks regularity at the same time
-    //     require(
-    //         bytes(_parsePiet(codels, id)).length > 0,
-    //         "Piet code must be in a rectangular shape at least."
-    //     ); // requirement must be upper in the code
-
-    //     emit TokenMinted(msg.sender, name, owner, codels);
-
-    //     return id;
-    // }
-
     function tokenURI(uint256 tokenId)
         override
         public
@@ -255,12 +234,12 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     {
         string[7] memory parts;
 
-        parts[0] = '{ name: "';
+        parts[0] = '{ "name": "';
         parts[1] = _tokenNames[tokenId];
-        parts[2] = '", Descripiton: " NFpieT is a community generated token that represents a code in the esoteric language Piet.';
-        parts[4] = '", image: "data:image/svg+xml;base64,';
+        parts[2] = '", "description": "NFpieT is a community generated token that represents a code in the esoteric language Piet.';
+        parts[4] = '", "image": "data:image/svg+xml;base64,';
         parts[5] = Base64.encode(bytes(_parsePiet(_tokenCodelJsons[tokenId])));
-        parts[6] = '=="}';
+        parts[6] = '"}';
 
         string memory json = string(
             abi.encodePacked(
@@ -276,9 +255,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
             )
         );
 
-        
-
-
         return string(abi.encodePacked('data:application/json;base64,', Base64.encode(bytes(json))));
     }
 
@@ -290,28 +266,29 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         return existingPIETs[codels] == 1;
     }
 
-    // TODO : set author as the adress of the minter, so that people can only mint once ?
     function payToMint(
         address recipient,
         string memory name,
         string memory codels
     ) public payable returns (uint256) {
-        require(existingPIETs[codels] != 1, 'NFT already minted!');
+        require(existingPIETs[codels] != 1, 'Piet code already minted!');
+        require(bytes(name).length <= 32, "Name must be at most 32 bytes long.");
+        require(bytes(name).length > 0, "Name must be at least 1 byte long.");
+        require(bytes(codels).length > 0, "Codels must be given.");
         require(msg.value >= 0.05 ether, "Need to pay up!");
+        require(
+            bytes(_parsePiet(codels)).length > 0,
+            "Invalid Piet code."
+        ); // requirement must be upper in the code
 
         uint256 newItemId = _tokenIds.current();
         _tokenIds.increment();
         existingPIETs[codels] = 1;
 
-        _mint(recipient, newItemId);
+        _safeMint(recipient, newItemId);
         _setTokenCredits(newItemId, name, recipient, codels);
 
-        require(
-            bytes(_parsePiet(codels)).length > 0,
-            "Piet code must be in a rectangular shape at least."
-        ); // requirement must be upper in the code
-
-        emit TokenMinted(msg.sender, name, recipient, codels);
+        
 
         return newItemId;
     }
