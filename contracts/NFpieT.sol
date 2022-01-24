@@ -225,27 +225,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         return _buildSvgContent(rectangles, string(xBytes), string(yBytes));
     }
 
-    // function mint(
-    //     address owner,
-    //     string memory name,
-    //     string memory codels
-    // ) public returns (uint256) {
-    //     _tokenIds.increment();
-
-    //     uint256 id = _tokenIds.current();
-    //     _safeMint(owner, id);
-    //     _setTokenCredits(id, name, owner);
-    //     // parses the piet and checks regularity at the same time
-    //     require(
-    //         bytes(_parsePiet(codels, id)).length > 0,
-    //         "Piet code must be in a rectangular shape at least."
-    //     ); // requirement must be upper in the code
-
-    //     emit TokenMinted(msg.sender, name, owner, codels);
-
-    //     return id;
-    // }
-
     function tokenURI(uint256 tokenId)
         override
         public
@@ -254,12 +233,12 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     {
         string[7] memory parts;
 
-        parts[0] = '{ name: "';
+        parts[0] = '{ "name": "';
         parts[1] = _tokenNames[tokenId];
-        parts[2] = '", Descripiton: " NFpieT is a community generated token that represents a code in the esoteric language Piet.';
-        parts[4] = '", image: "data:image/svg+xml;base64,';
+        parts[2] = '", "description": "NFpieT is a community generated token that represents a code in the esoteric language Piet.';
+        parts[4] = '", "image": "data:image/svg+xml;base64,';
         parts[5] = Base64.encode(bytes(_parsePiet(_tokenCodelJsons[tokenId])));
-        parts[6] = '=="}';
+        parts[6] = '"}';
 
         string memory json = string(
             abi.encodePacked(

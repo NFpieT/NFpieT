@@ -17,6 +17,8 @@ describe("Token contract", function () {
     ]
   }
 
+  const svgForMetadataCodels = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 3 3"><rect x="0" y="0" width="1" height="1" fill="#000000"/><rect x="1" y="0" width="1" height="1" fill="#C0FFFF"/><rect x="2" y="0" width="1" height="1" fill="#C000C0"/><rect x="0" y="1" width="1" height="1" fill="#C0C0FF"/><rect x="1" y="1" width="1" height="1" fill="#C0FFC0"/><rect x="2" y="1" width="1" height="1" fill="#0000FF"/><rect x="0" y="2" width="1" height="1" fill="#FFFFC0"/><rect x="1" y="2" width="1" height="1" fill="#000000"/><rect x="2" y="2" width="1" height="1" fill="#C0C0FF"/></svg>'
+
   const invalid_codels_1 = [
     [1, 5, 19],
     [6, 4],
@@ -26,8 +28,10 @@ describe("Token contract", function () {
   const invalid_codels_2 = [
     [1, 5, 19],
     [6, 4, 12],
-    [3, 1, ],
+    [3, 1,],
   ]
+
+  const nfpietDescription = "NFpieT is a community generated token that represents a code in the esoteric language Piet."
 
   beforeEach(async function () {
     NFpieT = await ethers.getContractFactory("NFpieT");
@@ -132,22 +136,42 @@ describe("Token contract", function () {
 
     it("Should match its original data when decoded", async function () {
       expect(await nfpiet.totalSupply()).to.equal(0);
-      const newlyMintedToken = await nfpiet.callStatic.payToMint(
+      const newlyMintedToken = await nfpiet.payToMint(
         recipient,
         metadata.name,
         JSON.stringify(metadata.codels),
         { value: ethers.utils.parseEther('0.05') }
       );
 
+      // be sure id is 0
       expect(await nfpiet.totalSupply()).to.equal(1);
 
-      const data = '{ name: "", Descripiton: " NFpieT is a community generated token that represents a code in the esoteric language Piet.", image: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAwIC8iPjwvc3ZnPg===="}'
+      // fetch uri for token 0
+      const tokenURI = await nfpiet.tokenURI(0);
 
-      let tokenUri = await nfpiet.tokenURI(newlyMintedToken);
+      // decode raw payload
+      const decodedPayload = Buffer.from(tokenURI.replace('data:application/json;base64,', ''), 'base64').toString('utf-8')
+      
+      //parse decoded json from raw payload
+      const parsedPayload = JSON.parse(decodedPayload);
 
-      let decodedPayload = Buffer.from(tokenUri.replace('data:application/json;base64,', ''), 'base64').toString('utf-8');
 
-      expect(decodedPayload).to.equal(data);
+      // check name 
+      expect(parsedPayload.name).to.equal(metadata.name);
+
+      //check description
+      expect(parsedPayload.description).to.equal(nfpietDescription);
+
+      // take image as base64 encoded svg and extract svg
+      const decodedCodelsSvg = Buffer.from(
+        parsedPayload.image
+          .replace('data:image/svg+xml;base64,', ''),
+        'base64'
+      ).toString('utf-8')
+
+      // compare svg to valid svg
+      expect(decodedCodelsSvg).to.equal(svgForMetadataCodels);
+
     });
   });
 })
