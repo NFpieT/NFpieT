@@ -262,10 +262,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         return _tokenIds.current();
     }
 
-    function isContentOwned(string memory codels) public view returns (bool) {
-        return existingPIETs[codels] == 1;
-    }
-
     function payToMint(
         address recipient,
         string memory name,
