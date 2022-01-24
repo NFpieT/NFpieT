@@ -46,6 +46,32 @@ describe("Token contract", function () {
     });
   });
 
+  describe("TotalSupply", function () {
+    it("Should return the exact amout of nft that's been minted", async function () {
+      expect(await nfpiet.totalSupply()).to.equal(0);
+
+      const nft_to_mint = 5;
+
+      for (let i = 0; i < nft_to_mint; i++) {
+        expect(await nfpiet.totalSupply()).to.equal(i);
+        await nfpiet.payToMint(
+          recipient,
+          metadata.name,
+          JSON.stringify(
+            [
+              [1, 5, 19],
+              [6, 4, 12],
+              [3, 1, i]
+            ]
+          ),
+          { value: ethers.utils.parseEther('0.1') }
+        );
+        
+      }
+      expect(await nfpiet.totalSupply()).to.equal(nft_to_mint);
+
+    });
+  });
   describe("Transactions", function () {
     it("Should mint a token and transfer to its author", async function () {
       let balance = await nfpiet.balanceOf(recipient);
@@ -128,7 +154,19 @@ describe("Token contract", function () {
 
 
       expect(await nfpiet.totalSupply()).to.equal(0);
+    });
 
+    it("Should not mint a token if not even eth is given.", async function () {
+      expect(await nfpiet.totalSupply()).to.equal(0);
+
+      await expect(nfpiet.payToMint(
+        recipient,
+        metadata.name,
+        JSON.stringify(metadata.codels),
+        { value: ethers.utils.parseEther('0.02') }
+      )).to.be.revertedWith("Need to pay up!")
+
+      expect(await nfpiet.totalSupply()).to.equal(0);
     });
   });
 
@@ -151,7 +189,7 @@ describe("Token contract", function () {
 
       // decode raw payload
       const decodedPayload = Buffer.from(tokenURI.replace('data:application/json;base64,', ''), 'base64').toString('utf-8')
-      
+
       //parse decoded json from raw payload
       const parsedPayload = JSON.parse(decodedPayload);
 

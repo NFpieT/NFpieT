@@ -261,7 +261,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         return _tokenIds.current();
     }
 
-    // TODO : set author as the adress of the minter, so that people can only mint once ?
     function payToMint(
         address recipient,
         string memory name,
