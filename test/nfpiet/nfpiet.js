@@ -98,37 +98,40 @@ describe("Token contract", function () {
 
     });
 
-    // WIP
     it("Should not mint a token with invalid codels #1", async function () {
       expect(await nfpiet.totalSupply()).to.equal(0);
 
       await expect(nfpiet.payToMint(
         recipient,
         metadata.name,
-        invalid_codels_1,
+        JSON.stringify(invalid_codels_1),
         { value: ethers.utils.parseEther('0.05') }
-      )).to.be.reverted
+      )).to.be.revertedWith("Invalid Piet code.")
 
       expect(await nfpiet.totalSupply()).to.equal(0);
 
     });
 
-    // WIP
     it("Should not mint a token with invalid codels #2", async function () {
       expect(await nfpiet.totalSupply()).to.equal(0);
 
-      const test = await nfpiet.payToMint(
+      await expect(nfpiet.payToMint(
         recipient,
         metadata.name,
-        invalid_codels_2,
+        JSON.stringify(invalid_codels_2),
         { value: ethers.utils.parseEther('0.05') }
-      );
+      )).to.be.revertedWith("Invalid Piet code.")
+
 
       expect(await nfpiet.totalSupply()).to.equal(0);
 
     });
+  });
 
-    it("Should decoded tokenURI match the data", async function () {
+  describe("TokenURI", function () {
+
+    it("Should match its original data when decoded", async function () {
+      expect(await nfpiet.totalSupply()).to.equal(0);
       const newlyMintedToken = await nfpiet.callStatic.payToMint(
         recipient,
         metadata.name,
@@ -136,7 +139,7 @@ describe("Token contract", function () {
         { value: ethers.utils.parseEther('0.05') }
       );
 
-      expect(newlyMintedToken).to.equal(0);
+      expect(await nfpiet.totalSupply()).to.equal(1);
 
       const data = '{ name: "", Descripiton: " NFpieT is a community generated token that represents a code in the esoteric language Piet.", image: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaW5ZTWluIG1lZXQiIHZpZXdCb3g9IjAgMCAwIC8iPjwvc3ZnPg===="}'
 

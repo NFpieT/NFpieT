@@ -294,7 +294,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         require(msg.value >= 0.05 ether, "Need to pay up!");
         require(
             bytes(_parsePiet(codels)).length > 0,
-            "Piet code must be in a rectangular shape at least."
+            "Invalid Piet code."
         ); // requirement must be upper in the code
 
         uint256 newItemId = _tokenIds.current();
