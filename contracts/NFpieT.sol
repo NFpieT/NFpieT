@@ -136,7 +136,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         string memory height
     ) internal pure returns (string memory) {
         string[7] memory parts;
-        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 ';
+        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 ';
         parts[1] = width;
         parts[2] = " ";
         parts[3] = height;
