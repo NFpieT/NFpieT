@@ -17,7 +17,7 @@ describe("Token contract", function () {
     ]
   }
 
-  const svgForMetadataCodels = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 3 3"><rect x="0" y="0" width="1" height="1" fill="#000000"/><rect x="1" y="0" width="1" height="1" fill="#C0FFFF"/><rect x="2" y="0" width="1" height="1" fill="#C000C0"/><rect x="0" y="1" width="1" height="1" fill="#C0C0FF"/><rect x="1" y="1" width="1" height="1" fill="#C0FFC0"/><rect x="2" y="1" width="1" height="1" fill="#0000FF"/><rect x="0" y="2" width="1" height="1" fill="#FFFFC0"/><rect x="1" y="2" width="1" height="1" fill="#000000"/><rect x="2" y="2" width="1" height="1" fill="#C0C0FF"/></svg>'
+  const svgForMetadataCodels = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 03 03"><rect x="00" y="00" width="1" height="1" fill="#000000"/><rect x="01" y="00" width="1" height="1" fill="#C0FFFF"/><rect x="02" y="00" width="1" height="1" fill="#C000C0"/><rect x="00" y="01" width="1" height="1" fill="#C0C0FF"/><rect x="01" y="01" width="1" height="1" fill="#C0FFC0"/><rect x="02" y="01" width="1" height="1" fill="#0000FF"/><rect x="00" y="02" width="1" height="1" fill="#FFFFC0"/><rect x="01" y="02" width="1" height="1" fill="#000000"/><rect x="02" y="02" width="1" height="1" fill="#C0C0FF"/></svg>'
 
   const invalid_codels_1 = [
     [1, 5, 19],
@@ -31,7 +31,38 @@ describe("Token contract", function () {
     [3, 1,],
   ]
 
+  const invalid_codels_3 = [
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 1, 2, 3, 4, 5, 6, 7],
+  ]
+
   const nfpietDescription = "NFpieT is a community generated token that represents a code in the esoteric language Piet."
+
+  const invalid_piet_message = "Invalid Piet code. Piet code must be either square or rectangle, and max length is 24 codels."
 
   beforeEach(async function () {
     NFpieT = await ethers.getContractFactory("NFpieT");
@@ -39,12 +70,14 @@ describe("Token contract", function () {
     await nfpiet.deployed();
   });
 
+
   describe("Deployment", function () {
     it("Total supply of tokens", async function () {
 
       expect(await nfpiet.totalSupply()).to.equal(0);
     });
   });
+
 
   describe("TotalSupply", function () {
     it("Should return the exact amout of nft that's been minted", async function () {
@@ -66,12 +99,14 @@ describe("Token contract", function () {
           ),
           { value: ethers.utils.parseEther('0.1') }
         );
-        
+
       }
       expect(await nfpiet.totalSupply()).to.equal(nft_to_mint);
 
     });
   });
+
+
   describe("Transactions", function () {
     it("Should mint a token and transfer to its author", async function () {
       let balance = await nfpiet.balanceOf(recipient);
@@ -136,7 +171,7 @@ describe("Token contract", function () {
         metadata.name,
         JSON.stringify(invalid_codels_1),
         { value: ethers.utils.parseEther('0.05') }
-      )).to.be.revertedWith("Invalid Piet code.")
+      )).to.be.revertedWith(invalid_piet_message)
 
       expect(await nfpiet.totalSupply()).to.equal(0);
 
@@ -150,7 +185,7 @@ describe("Token contract", function () {
         metadata.name,
         JSON.stringify(invalid_codels_2),
         { value: ethers.utils.parseEther('0.05') }
-      )).to.be.revertedWith("Invalid Piet code.")
+      )).to.be.revertedWith(invalid_piet_message)
 
 
       expect(await nfpiet.totalSupply()).to.equal(0);
@@ -169,7 +204,7 @@ describe("Token contract", function () {
       expect(await nfpiet.totalSupply()).to.equal(0);
     });
 
-    it("Should not deploy a token with a piet code that's been used already", async function () {
+    it("Should not mint a token with a piet code that's been used already", async function () {
       expect(await nfpiet.totalSupply()).to.equal(0);
 
       await nfpiet.payToMint(
@@ -180,7 +215,7 @@ describe("Token contract", function () {
       );
 
       expect(await nfpiet.totalSupply()).to.equal(1);
-      
+
       await expect(nfpiet.payToMint(
         recipient,
         metadata.name,
@@ -190,7 +225,22 @@ describe("Token contract", function () {
 
       expect(await nfpiet.totalSupply()).to.equal(1);
     });
+
+    it("Should not mint a token with a piet code that's too big", async function () {
+      expect(await nfpiet.totalSupply()).to.equal(0);
+
+
+      await expect(nfpiet.payToMint(
+        recipient,
+        metadata.name,
+        JSON.stringify(invalid_codels_3),
+        { value: ethers.utils.parseEther('0.05') }
+      )).to.be.revertedWith(invalid_piet_message)
+
+      expect(await nfpiet.totalSupply()).to.equal(0);
+    });
   });
+
 
   describe("TokenURI", function () {
 
@@ -218,6 +268,8 @@ describe("Token contract", function () {
 
       // check name 
       expect(parsedPayload.name).to.equal(metadata.name);
+
+      expect(JSON.stringify(parsedPayload.json_image)).to.equal(JSON.stringify(metadata.codels));
 
       //check description
       expect(parsedPayload.description).to.equal(nfpietDescription);

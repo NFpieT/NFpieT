@@ -18,7 +18,6 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "hardhat/console.sol";
 import "./Base64.sol";
 
 contract NFpieT is ERC721, ERC721Burnable, Ownable {
@@ -86,18 +85,6 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
     ) internal pure returns (string memory) {
         return string(abi.encodePacked(a, b, c, d, e));
     }
-
-    // function bytes2ToString(bytes2 data) internal returns (string memory) {
-    //     bytes memory bytesString = new bytes(2);
-    //     for (uint8 j = 0; j < 8; j++) {
-    //         bytes1 char = bytes1(bytes32(uint(data) * 2**(8 * j)));
-    //         if (char != 0) {
-    //             bytesString[j] = char;
-    //         }
-    //     }
-
-    //     return string(bytesString);
-    // }
 
     function _buildSvgRectangle(
         string memory x,
@@ -177,8 +164,8 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         // Bytes contain each a character, coded as utf-8.
         bytes memory buffer = bytes(codels);
 
-        bytes memory yBytes = new bytes(1);
-        bytes memory xBytes = new bytes(1);
+        bytes memory yBytes = new bytes(2);
+        bytes memory xBytes = new bytes(2);
 
         uint16 c = 0;
         while (c < buffer.length) {
@@ -201,10 +188,18 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
                     ++c;
                 }
                 
-                yBytes[0] = bytes1(y + 48);
+                // Secure the memory limiting the max number of codels
+                if (y > 24 || x > 24) {
+                    return "";
+                }
 
                 
-                xBytes[0] = bytes1(x + 48);
+                yBytes[0] = bytes1(y/10 + 48);
+                yBytes[1] = bytes1(y%10 + 48);
+
+                xBytes[0] = bytes1(x/10 + 48);
+                xBytes[1] = bytes1(x%10 + 48);
+                
 
                 rectangles = append(
                     rectangles,
@@ -220,8 +215,11 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         }
 
         // store width and height in x and y buffers to save memory
-        yBytes[0] = bytes1(y + 47);
-        xBytes[0] = bytes1(prev_width + 48);
+        yBytes[0] = bytes1(y/10 + 48);
+        yBytes[1] = bytes1(y%10 + 47);
+
+        xBytes[0] = bytes1(prev_width/10 + 48);
+        xBytes[1] = bytes1(prev_width%10 + 48);
 
         return _buildSvgContent(rectangles, string(xBytes), string(yBytes));
     }
@@ -232,14 +230,16 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         view
         returns (string memory)
     {
-        string[7] memory parts;
+        string[9] memory parts;
 
         parts[0] = '{ "name": "';
         parts[1] = _tokenNames[tokenId];
         parts[2] = '", "description": "NFpieT is a community generated token that represents a code in the esoteric language Piet.';
         parts[4] = '", "image": "data:image/svg+xml;base64,';
         parts[5] = Base64.encode(bytes(_parsePiet(_tokenCodelJsons[tokenId])));
-        parts[6] = '"}';
+        parts[6] = '", "json_image": ';
+        parts[7] = _tokenCodelJsons[tokenId];
+        parts[8] = ' }';
 
         string memory json = string(
             abi.encodePacked(
@@ -250,8 +250,8 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
                 parts[4],
                 parts[5],
                 parts[6],
-                "",
-                ""
+                parts[7],
+                parts[8]
             )
         );
 
@@ -274,7 +274,7 @@ contract NFpieT is ERC721, ERC721Burnable, Ownable {
         require(msg.value >= 0.05 ether, "Need to pay up!");
         require(
             bytes(_parsePiet(codels)).length > 0,
-            "Invalid Piet code."
+            "Invalid Piet code. Piet code must be either square or rectangle, and max length is 24 codels."
         ); // requirement must be upper in the code
 
         uint256 newItemId = _tokenIds.current();

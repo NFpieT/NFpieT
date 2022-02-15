@@ -11,10 +11,10 @@ module.exports = {
       localhost: {
         url: "http://127.0.0.1:8545"
       },
-      matic: {
-        url: API_URL,
-        accounts: [`0x${PRIVATE_KEY}`]
-      }
+      // matic: {
+      //   url: API_URL,
+      //   accounts: [`0x${PRIVATE_KEY}`]
+      // }
     },
     solidity: {
       version: "0.8.4",
@@ -32,6 +32,6 @@ module.exports = {
       artifacts: "./artifacts"
     },
     mocha: {
-      timeout: 20000
+      timeout: 60000
     }
 }
